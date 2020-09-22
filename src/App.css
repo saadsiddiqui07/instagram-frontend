@@ -1,0 +1,97 @@
+* {
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Roboto Condensed", sans-serif;
+}
+
+.app {
+  background-color: #fafafa;
+}
+
+.app__header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px;
+  border-bottom: 1px solid lightgray;
+  height: 50px;
+  /* top: 0;
+  position: sticky;
+  z-index: 100; */
+}
+
+.app__headerLeft {
+  display: flex;
+  align-items: center;
+}
+
+.app__headerLeftIcon {
+  margin-right: 5px;
+  font-size: 33px !important;
+  cursor: pointer;
+}
+
+.app__headerImage {
+  object-fit: contain;
+  image-resolution: 500px;
+}
+
+.app__headerButtons {
+  display: flex;
+  justify-content: space-between;
+  margin: 3px;
+}
+
+.appheader__logoutButton {
+  background-color: rgb(235, 33, 33) !important;
+  color: white !important;
+  width: 80px !important;
+  margin-right: 3px !important;
+  font-size: 13px !important;
+}
+
+.appheader__btn1 {
+  background-color: royalblue !important;
+  color: white !important;
+  width: 80px !important;
+  margin-right: 3px !important;
+  font-size: 10px !important;
+}
+
+.appheader__btn2 {
+  background-color: rgb(37, 144, 117) !important;
+  color: white !important;
+  width: 70px !important;
+  margin-right: 3px !important;
+  font-size: 10px !important;
+}
+
+.app__signUp {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.app__signUpCenter {
+  padding: 10px;
+}
+.app__signUpCenterInput {
+  padding: 10px;
+}
+
+.app__signUpButton {
+  background-color: royalblue !important;
+  width: fit-content;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-top: 20px !important;
+}
+
+.app__LoginButton {
+  background-color: rgb(37, 144, 117) !important;
+  width: fit-content;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-top: 20px !important;
+}

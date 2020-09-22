@@ -1,0 +1,85 @@
+.post {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  background-color: white;
+  border: 1px solid lightgray;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+  padding: 2px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5px;
+}
+
+.post__header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.post__icons {
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+  margin-right: auto;
+  margin-top: 3px;
+}
+
+.post__iconsButton {
+  margin-right: 35px;
+  cursor: pointer;
+}
+.post__avatar {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.post__image {
+  object-fit: contain;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+  width: 100%;
+  height: 350px;
+}
+
+.post__icon {
+  margin-left: auto;
+  cursor: pointer;
+}
+
+.post__caption {
+  font-weight: normal;
+  padding: 10px;
+}
+.post__comments {
+  padding: 15px;
+}
+
+.post__commentBox {
+  display: flex;
+  margin-top: 10px;
+  padding: 3px;
+}
+
+.post__commentHeader {
+  color: lightgray;
+  margin-left: 10px;
+}
+
+.post__commentInput {
+  flex: 0.9;
+  border: none;
+  padding: 12px;
+}
+
+.post__commentsUser {
+  margin-left: 30px;
+}
+
+.post__commentButton {
+  flex: 0.1;
+  color: royalblue;
+  background-color: transparent !important;
+  border: none !important;
+}
