@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Button, makeStyles, Modal, Input } from "@material-ui/core";
 import Post from "./components/Post";
-import { db, auth } from "./firebase";
+import { auth } from "./firebase";
 import CameraAltOutlinedIcon from "@material-ui/icons/CameraAltOutlined";
 import ImageUpload from "./components/ImageUpload";
+import Pusher from "pusher-js";
+import axios from "./axios.js";
 
 function getModalStyle() {
   const top = 50;
@@ -13,21 +15,21 @@ function getModalStyle() {
   return {
     top: `${top}%`,
     left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`
+    transform: `translate(-${top}%, -${left}%)`,
   };
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
     position: "absolute",
     width: 400,
     backgroundColor: theme.palette.background.paper,
     border: "2px solid #000",
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3)
-  }
+    padding: theme.spacing(2, 4, 3),
+  },
 }));
-
+// MAIN FUNCTION
 function App() {
   const classes = useStyles();
   const [modalStyle] = useState(getModalStyle);
@@ -40,22 +42,9 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    db.collection("posts")
-      .orderBy("timestamp", "desc")
-      .onSnapshot(snapshot => {
-        setPosts(
-          snapshot.docs.map(doc => ({
-            id: doc.id,
-            post: doc.data()
-          }))
-        );
-      });
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(authUser => {
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
-        console.log(authUser);
+        // console.log(authUser);
         setUser(authUser);
       } else {
         // user has logged out....
@@ -68,30 +57,61 @@ function App() {
     };
   }, [user, username]); // dependencies
 
+  // fetch posts from the database
+  const fetchPosts = async () =>
+    await axios.get("/sync").then((response) => {
+      console.log(response);
+      setPosts(response.data.map((item) => item));
+      setPosts(response.data);
+    });
+
+  useEffect(() => {
+    const pusher = new Pusher("925bb7f598f7ae94ee1c", {
+      cluster: "ap2",
+    });
+
+    const channel = pusher.subscribe("posts");
+    channel.bind("inserted", (data) => {
+      console.log("Data received", data);
+      fetchPosts();
+    });
+  }, []);
+
+  useEffect(() => {
+    fetchPosts();
+    /* db.collection("posts")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) => [
+        setPosts(
+          snapshot.docs.map((doc) => ({ id: doc.id, post: doc.data() }))
+        ),
+      ]);*/
+  }, []);
+
   // FUNCTION FOR CREATING A NEW USER
-  const signUp = e => {
+  const signUp = (e) => {
     e.preventDefault();
     auth
       .createUserWithEmailAndPassword(email, password)
-      .then(authUser => {
+      .then((authUser) => {
         return authUser.user.updateProfile({
-          displayName: username
+          displayName: username,
         });
       })
-      .catch(err => alert(err.message));
+      .catch((err) => alert(err.message));
     setOpenSignup(false);
   };
 
   // FUNCTION FOER LOGGING IN
-  const login = e => {
+  const login = (e) => {
     e.preventDefault();
     auth
       .signInWithEmailAndPassword(email, password)
-      .catch(err => alert(err.message));
+      .catch((err) => alert(err.message));
     setOpenLogin(false);
   };
 
-  console.log(user);
+  // console.log(user);
 
   return (
     <div className="app">
@@ -102,7 +122,8 @@ function App() {
             <img
               className="app__headerImage"
               alt=""
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/120px-Instagram_logo.svg.png"
+              // src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/120px-Instagram_logo.svg.png"
+              img="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTjtjBw4xwF01ZdKL1cmnYZD3vdavlQPOWA7w&usqp=CAU"
             />
             <center className="app__signUpCenter">
               <Input
@@ -110,21 +131,21 @@ function App() {
                 placeholder="Enter username..."
                 type="text"
                 value={username}
-                onChange={e => setUsername(e.target.value)}
+                onChange={(e) => setUsername(e.target.value)}
               />
               <Input
                 className="app__signUpCenterInput"
                 placeholder="Enter email..."
                 type="email"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <Input
                 className="app__signUpCenterInput"
                 placeholder="Enter password..."
                 type="password"
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </center>
             <Button
@@ -153,14 +174,14 @@ function App() {
                 placeholder="Enter email..."
                 type="email"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <Input
                 className="app__signUpCenterInput"
                 placeholder="Enter password..."
                 type="password"
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </center>
             <Button className="app__LoginButton" type="submit" onClick={login}>
@@ -209,14 +230,14 @@ function App() {
         </div>
       </div>
 
-      {posts.map(({ id, post }) => (
+      {posts.map((post) => (
         <Post
-          key={id}
-          postId={id}
+          key={post._id}
+          postId={post._id}
           user={user}
-          username={post.username}
+          username={post.user}
           caption={post.caption}
-          imageUrl={post.imageUrl}
+          imageUrl={post.image}
           avatar={post.avatar}
         />
       ))}

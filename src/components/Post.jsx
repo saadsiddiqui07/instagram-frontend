@@ -24,6 +24,7 @@ function Post({ caption, username, imageUrl, avatar, postId, user }) {
           setComments(snapshot.docs.map((doc) => doc.data()));
         });
     }
+    // performs a clean up action
     return () => {
       unsubscribe();
     };
